@@ -1,0 +1,149 @@
+{% extends 'socialnetwork/layout.html' %}
+{% load humanize %}
+
+{% block content %}
+<div id="main" class="container-fluid">
+        <div class="row">
+
+            <!-- Barra Izquierda -->
+            <div class="col-md-3 col-lg-3 col-xl-3 d-none d-md-block" style="padding:1em">
+
+                <div class="card" >
+                    {% if request.user.is_authenticated %}
+                    <img src="{{ request.user.profile.image.url }}" class="card-img-top rounded-circle" style="padding: 20px" alt="...">
+                    {% endif %}
+                    <div class="card-body" style="text-align:center">
+                        <h5 class="card-title">{{ request.user.first_name }}</h5>
+                        <p class="card-text">@{{ request.user }}</p>
+                        {% if request.user.is_authenticated %}
+                        <p class="card-text">{{ request.user.profile.bio }}</p>
+                        <h6 class="card-title font-weight-bold">{{ request.user.profile.followers.count }} Followers</h6>
+                        <h6 class="card-title font-weight-bold">{{ request.user.profile.following.count }} Following</h6>
+                        <a href="{% url 'profile' request.user %}" class="btn btn-outline-success" style="margin-top:1em">Mi perfil</a>
+                        <a href="{% url 'editar' %}" class="btn btn-outline-success" style="margin-top:1em">Editar mi perfil</a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+            <!-- End Barra Izquierda -->
+
+            <!-- Center -->
+            <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 d-block" style="padding:1em">
+
+                <!-- Input Post -->
+                {% if request.user.is_authenticated %}
+                <p style="font-size: xx-large; color: #A9DFBF; font-weight: bolder; text-align: center"> Posts </p>
+                <div id="inputPostArea" class="row" style="max-width: 490px; margin: 0 auto; margin-top: 50px; border-radius: 3px; padding: 30px; border: 1px solid #A9DFBF;">
+                    <!-- Image -->
+                    <div class="col-2">
+                        <img src="{{ request.user.profile.image.url}}" style="border-radius: 100px; width: 60px; margin-right: 15px;" alt="">
+                    </div>
+                    <!-- Post form -->
+                    <div class="col-10">
+                        <form method="post">
+                            {% csrf_token%}
+                            {{ form.content }}
+                            <div id="rightBtn">
+                                <button class="btn btn-outline-success" style="width: 100%;">Post</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- End Input Post -->
+
+                <!-- Posts -->
+                {% for post in posts %}
+                <div id="postsCards" style="max-width: 900px; margin: 0 auto; margin-top: 50px; border-radius: 3px; padding: 30px; border: 1px solid #A9DFBF">
+                    <div class="row">
+                        <div class="col-2">
+                            <img src="{{ post.user.profile.image.url }}" style="border-radius: 100px; width: 60px; margin-right: 15px" alt="">
+                        </div>
+                        <div class="col-10">
+                            <div class="row">
+                                <div class="col-4" style="float: left">
+                                    <a href="{% url 'profile' post.user %}" style="text-decoration: none; color: #A9DFBF; font-weight: bolder">{{ post.user.first_name }}</a>
+                                </div>
+                                <div class="col-4" style="float: left">
+                                    <a href="{% url 'profile' post.user %}" style="text-decoration: none; color: #A9DFBF">@{{ post.user }}</a>
+                                </div>
+                                <div class="col-4" style="float: right; text-align: right; color: #A6ACAF">
+                                   <span>{{ post.timestamp|naturaltime }}</span>
+                                </div>
+                            </div>
+                            <div class="row" style="padding: 1em 0 0">
+                                <hr style="color: #A9DFBF">
+                                <div class="col-10">
+                                    <p>{{post.content}}</p>
+                                </div>
+                                <!-- Delete -->
+                                {% if request.user == post.user %}
+                                <div class="col-2">
+                                    <a href="{% url 'delete' post.id %}" style="background: white; border: none;  float:right">
+                                    <i class="fa fa-trash-o" style="color: #657786"></i>
+                                    </a>
+                                </div>
+                                {% endif %}
+                                <!-- End Delete -->
+                                <hr style="color: #A9DFBF">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Like and Dislike -->
+                    {% if request.user.is_authenticated %}
+                    <div class="row" >
+                        <div class="col-3" style="text-align: right">
+                            <form method="POST" action="{% url 'like' post.pk %}" style="background: white; border: none">
+                                {% csrf_token %}
+                                <p>Like:
+                                    <button type="submit" class="fa fa-thumbs-up" style="color: #A9DFBF; background: white; border: none"></button>
+                                </p>
+                            </form>
+                        </div>
+                        <div class="col-3" style="padding-left: 1em; text-align: left">
+                            {{ post.likes.all.count }} likes
+                        </div>
+                        <div class="col-3" style="text-align: right">
+                            <form method="POST" action="{% url 'dislike' post.pk %}" style="background: white; border: none">
+                                {% csrf_token %}
+                                <p>Dislike:
+                                    <button type="submit" class="fa fa-thumbs-down" style="color: #A9DFBF; background: white; border: none"></button>
+                                </p>
+                            </form>
+                        </div>
+                        <div class="col-3" style="padding-left: 1em; text-align: left">
+                            {{ post.dislikes.all.count }} dislikes
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- End Like and Dislike -->
+                {% endfor %}
+                <!-- End Posts -->
+            </div>
+            <!-- End Center -->
+
+            <!-- Barra Derecha -->
+            <div class="col-md-3 col-lg-3 col-xl-3 d-none d-md-block">
+                <div id="WhoToFollowCard" style="margin: 0 auto; margin-top: 50px; border-radius: 3px; padding: 30px; border: 1px solid #D7DBDD">
+                    <div class="row">
+                        <p style="color: #A9DFBF; font-weight: bolder"> Users </p>
+                    </div>
+                    {% for profile in profiles %}
+                        <div class="row" style="margin: 1em auto">
+                            <div class="col-4">
+                                <img src="{{ profile.image.url }}" style="border-radius: 100px; width: 60px; margin-right: 15px" alt="">
+                            </div>
+                            <div class="col-8">
+                                <a href="{% url 'profile' profile.user %}" style="margin: auto; text-decoration: none; color: #95A5A6; text-align: right; vertical-align: middle">@{{ profile.user }}</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- End Barra derecha -->
+
+        </div>
+</div>
+{% endblock content %}

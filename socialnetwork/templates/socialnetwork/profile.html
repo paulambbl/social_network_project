@@ -1,0 +1,107 @@
+{% extends 'socialnetwork/layout.html' %}
+{% load humanize %}
+{% block content %}
+
+<div id="main" class="container-fluid d-flex">
+
+    <!-- Barra Izquierda -->
+    <div class="col-md-3 col-lg-3 col-xl-3 d-none d-md-block" style="padding:1em">
+
+        <div class="card" >
+            <img src="{{ user.profile.image.url }}" class="card-img-top rounded-circle" style="padding: 20px" alt="...">
+            <div class="card-body" style="text-align:center">
+                <h5 class="card-title">{{ user.first_name }}</h5>
+                <p class="card-text">@{{ user }}</p>
+                <p class="card-text">{{ user.profile.bio }}</p>
+                <h6 class="card-title font-weight-bold">{{ user.profile.followers.count }} Followers</h6>
+                <h6 class="card-title font-weight-bold">{{ user.profile.following.count }} Following</h6>
+
+                {% if request.user.is_authenticated %}
+                    {% if user.username != request.user.username %}
+                        {% if user not in request.user.profile.following %}
+                            <a href="{% url 'follow' user %}" class="btn btn-outline-success" style="margin-top : 1em">Follow</a>
+                        {% else %}
+                            <a href="{% url 'unfollow' user %}" class="btn btn-outline-success" style="margin-top : 1em">Unfollow</a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        <div style="text-align:center">
+            {% if request.user.is_authenticated %}
+                {% if user.username == request.user.username %}
+                    <a href="{% url 'editar' %}" type="button" class="btn btn-outline-success" style="margin-top : 1em">Editar mi perfil</a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+    </div>
+    <!-- End barra Izquierda -->
+
+    <!-- Center -->
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 d-block" style="padding:1em">
+
+        <!-- Posts -->
+        {% for post in posts %}
+        <div id="postsCards" style="max-width: 900px; margin: 0 auto; margin-top: 50px; border-radius: 3px; padding: 30px; border: 1px solid #A9DFBF">
+            <div class="row">
+                <div class="col-2">
+                    <img src="{{ post.user.profile.image.url }}" style="border-radius: 100px; width: 60px; margin-right: 15px" alt="">
+                </div>
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col-4" style="float: left">
+                            <a href="{% url 'profile' post.user %}" style="text-decoration: none; color: #A9DFBF; font-weight: bolder">{{ post.user.first_name }}</a>
+                        </div>
+                        <div class="col-4" style="float: left">
+                            <a href="{% url 'profile' post.user %}" style="text-decoration: none; color: #A9DFBF">@{{ post.user }}</a>
+                        </div>
+                        <div class="col-4" style="float: right; text-align: right; color: #A6ACAF">
+                            <span>{{ post.timestamp|naturaltime }}</span>
+                        </div>
+                    </div>
+                    <div class="row" style="padding: 1em 0 0">
+                        <div class="col-10">
+                            <p>{{post.content}}</p>
+                        </div>
+                        <!-- Delete -->
+                        {% if request.user == post.user %}
+                        <div class="col-2">
+                            <a href="{% url 'delete' post.id %}" style="background: white; border: none;  float:right">
+                                <i class="fa fa-trash-o" style="color: #657786"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                        <!-- End Delete -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <!-- End Posts -->
+
+    </div>
+    <!-- End Center -->
+
+    <!-- Barra Derecha -->
+            <div class="col-md-3 col-lg-3 col-xl-3 d-none d-md-block">
+                <div id="WhoToFollowCard" style="margin: 0 auto; margin-top: 50px; border-radius: 3px; padding: 30px; border: 1px solid #D7DBDD">
+                    <div class="row">
+                        <p style="color: #A9DFBF; font-weight: bolder"> Users </p>
+                    </div>
+                    {% for profile in profiles %}
+                        <div class="row" style="margin: 1em auto">
+                            <div class="col-4">
+                                <img src="{{ profile.image.url }}" style="border-radius: 100px; width: 60px; margin-right: 15px" alt="">
+                            </div>
+                            <div class="col-8">
+                                <a href="{% url 'profile' profile.user %}" style="margin: auto; text-decoration: none; color: #95A5A6; text-align: right; vertical-align: middle">@{{ profile.user }}</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- End Barra derecha -->
+
+</div>
+{% endblock content %}

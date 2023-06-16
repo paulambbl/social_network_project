@@ -1,0 +1,35 @@
+{% extends 'socialnetwork/layout.html' %}
+
+{% block content %}
+
+
+<div class="container-fluid" style="text-align: center">
+
+    <div class="row">
+        <p style="font-size: xx-large; color: #A9DFBF; font-weight: bolder; margin-top: 1em"> Log In </p>
+    </div>
+    <div class="row">
+        <form method="post">
+            {% csrf_token %}
+            <div style="margin: 1em">
+                <label style="padding: 1em; color: #A9DFBF; font-weight: bolder">Username: </label>
+                {{ form.username }}
+            </div>
+
+            <div style="margin: 1em">
+                <label style="padding: 1em; color: #A9DFBF; font-weight: bolder">Password: </label>
+                {{ form.password }}
+            </div>
+            {% if form.errors %}
+            <p>Username or password not correct</p>
+            {% endif %}
+            <button class="btn btn-outline-success" style="margin-top : 1em">Log in</button>
+        </form>
+    </div>
+    <div class="row" style="margin-top: 2em">
+        <a href="{% url 'register' %}"  style="color: #A9DFBF">Don't you have an account yet? Register</a>
+    </div>
+
+</div>
+{% endblock content %}
+

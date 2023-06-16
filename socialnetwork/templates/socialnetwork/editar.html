@@ -1,0 +1,45 @@
+{% extends 'socialnetwork/layout.html' %}
+
+{% block content %}
+
+<div id="main" class="container-fluid d-flex">
+
+    <div class="row">
+        <div class="col-md-2 col-lg-2 col-xl-2 d-none d-md-block" style="padding:1em">
+            <!-- Image form -->
+            <img src="{{ request.user.profile.image.url }}" class="card-img-top rounded-circle" style="padding: 20px" alt="">
+        </div>
+        <div class="col-md-10 col-lg-10 col-xl-10 d-none d-md-block justify-content-center" >
+            <!-- Formulario -->
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-6">
+                        <div style="margin: 1em">
+                            <label style="padding: 1em; color: #A9DFBF; font-weight: bolder">Nombre: </label>
+                            {{ u_form.first_name }}
+                        </div>
+                        <div style="margin:1em border: 1px solid #A9DFBF,">
+                            <label style="padding: 1em; color: #A9DFBF; font-weight: bolder">Username: </label>
+                            {{ u_form.username }}
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div style="margin: 1em">
+                            <label style="padding: 1em; color: #A9DFBF; font-weight: bolder">Biography: </label>
+                            {{ p_form.bio }}
+                        </div>
+                        <div style="margin: 1em">
+                           {{ p_form.image }}
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-outline-success" style="margin-top : 1em">Press to update or if you want to change your bio or your image</button>
+            </form>
+            <!-- End Formulario -->
+
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

@@ -1,0 +1,48 @@
+{% extends 'socialnetwork/layout.html' %}
+
+{% block content %}
+
+<div class="container-fluid" style="text-align: center">
+    <div class="row">
+        <p style="font-size: xx-large; color: #A9DFBF; font-weight: bolder; margin-top: 1em"> Register in MyFirst DJANGO App </p>
+    </div>
+    <div class="row">
+        <form method="post">
+            {% csrf_token %}
+            <div style="margin: 1em">
+                <label style="padding: 1em; color: #A9DFBF; font-weight: bolder">First Name: </label>
+                {{ form.first_name }}
+            </div>
+            <div style="margin: 1em">
+                <label style="padding: 1em; color: #A9DFBF; font-weight: bolder">Username: </label>
+                {{ form.username }}
+            </div>
+            <div style="margin: 1em">
+                <label style="padding: 1em; color: #A9DFBF; font-weight: bolder">Email: </label>
+                {{ form.email }}
+            </div>
+            <div style="margin: 1em">
+                <label style="padding: 1em; color: #A9DFBF; font-weight: bolder">Password: </label>
+                {{ form.password1 }}
+            </div>
+            <div style="margin: 1em">
+                <label style="padding: 1em; color: #A9DFBF; font-weight: bolder">Confirm Password: </label>
+                {{ form.password2 }}
+            </div>
+            {% if form.errors %}
+            <p style="color: red">Introduced data not correct</p>
+            <p>You must fill in all the fields and the password must meet the security requirements</p>
+                <p style="margin:0">Your password can’t be too similar to your other personal information.</p>
+                <p style="margin:0">Your password must contain at least 8 characters.</p>
+                <p style="margin:0">Your password can’t be a commonly used password.</p>
+                <p style="margin:0">Your password can’t be entirely numeric.</p>
+            {% endif %}
+            <button class="btn btn-outline-success" style="margin-top : 1em">Registrarse</button>
+        </form>
+    </div>
+
+
+
+</div>
+
+    {% endblock content %}
